@@ -1,0 +1,220 @@
+/* Universal */
+:root{
+  --color-prusian-blue: #1d2f43;
+  --color-prusian-blue-tr: rgba(29, 47, 67, .8);
+  --color-vidrian: #417b5a;
+  --color-bone: #d0ceba;
+  --color-a-hover: #fff;
+  --color-button-hover: grey;
+  --color-bone-tr: rgba(208, 206, 186,.2);
+  --color-cool-gray: #7f7caf;
+  --color-brown-sugar: #a9714b;
+  --font-estudio: 'Josefin Sans', 'Roboto', sans-serif;
+  --font-main: 'Source Sans 3', Arial, sans-serif;
+}
+
+*{
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+html{
+  font-family: var(--font-main);
+  font-size: 15px;
+  scroll-padding-top: 64px;
+}
+
+body{
+  background-color: var(--color-prusian-blue);
+  color: var(--color-bone);
+  margin: 0px;
+}
+
+main{
+  width: 90%;
+  margin: auto;
+}
+
+.container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/*     Header    */
+header{
+  font-family: 'Roboto', Arial, Helvetica, sans-serif; /* Only for header */
+  font-size: 1.2rem;
+  width: 100%;
+  margin: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-prusian-blue-tr);
+  color: var(--color-bone);
+  --webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);  /* sandblasted glass efect */
+  border-bottom: 1px solid var(--color-bone-tr);
+}
+
+header div.container{
+  font-family: var(--font-estudio);
+  font-size: 1.7rem;
+  padding-bottom: .2rem; /*pading to "center" the logo */
+}
+
+header div span{margin-top: .5rem;} /* Puts the "Estudio Figarola" text a little bit down */
+
+header img{
+  margin: 5px 10px;
+  height: 50px;
+  --webkit-filter: drop-shadow(1px 1px 5px white);
+  filter: drop-shadow(1px 1px 5px white);
+}
+
+nav{
+  color: inherit;
+  margin-left: auto;
+  text-align: center;
+  padding-right: .5rem;
+}
+@media only screen and (max-width: 666px) {
+  html{
+    scroll-padding-top: 85px;
+  }
+  nav{
+    margin: 0 auto;
+    margin-bottom: .5rem;
+  }
+}
+nav a{
+  color: inherit;
+  font-style: normal;
+  text-decoration: none;
+  margin: 0 .6rem;
+}
+nav a:hover{
+  display: inline-block;
+  color: var(--color-a-hover);
+  transform: scale(1.1);
+}
+
+/*     Nosotros    */
+#nosotros{
+  min-height: 600px;
+  min-width: 290px;
+  background-image: url("resources/img/empresas.jpg");
+  background-position: center;
+  background-size: cover;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-start;
+}
+#nosotros .textBox{
+  width: 45%;
+  padding: 3%;
+  min-width: 260px;
+  margin-left: 5%;
+  display: flex;
+  background-color: var(--color-prusian-blue-tr);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  --webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);  /* sandblasted glass efect */
+}
+#nosotros .button{
+  background-color: var(--color-bone);
+  color: var(--color-prusian-blue);
+  border: 1px solid var(--color-bone);
+  font-size: 1.6rem;
+  padding: 2% 5%;
+  margin-top: 2%;
+  border-radius: .5rem;
+  text-decoration: none;
+}
+#nosotros .button:hover{background-color: var(--color-button-hover);}
+#nosotros .button:active{
+  background-color: var(--color-button-hover);
+  border: 1px solid var(--color-button-hover);
+}
+#nosotros p{margin: 1% 2% 3% 2%;}
+#nosotros h3{
+  font-size: 1.4rem;
+  margin: 1% 2%;
+}
+
+/*     Productos    */
+#productos{
+  margin-top: 5%;
+  align-content: center;
+  justify-content: center;
+  text-align: center;
+  flex-wrap: wrap;
+  color: var(--color-bone);
+}
+#productos h2{font-size: 2rem;}
+#productos h3{
+  margin: 4% auto;
+}
+#prodGrid{
+  width: 100%;
+  display: flex;
+  margin-top: 1%;
+}
+.prodImg{
+  width: 300px;
+  height: 200px;
+  margin: 0;
+}
+.prod{
+  margin: auto 2%;
+  width: 300px;
+  height: 400px;
+}
+
+/*     Location    */
+#where{
+  margin-top: 2%;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+#where iframe{
+  margin-top: 1%;
+  display: flex;
+  flex-grow: 1;
+  width: 80%;
+  height: 400px;
+}
+/*     Location    */
+
+/*     Contact    */
+#contact{
+  margin-top: 2%;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#contact div.container{
+  align-items: center;
+  flex-direction: row;
+}
+#contact img{
+  width: 55%;
+  min-width: 300px;
+}
+#contact .textBox{
+  min-width: 300px;
+  margin-left: 1%;
+}
+#contact h3{margin: 3% 0%;}
+#contact p{margin: 0% 2%;}
+
+
+/*     Footer    */
+footer{margin: 5% 0 2% 0;}
