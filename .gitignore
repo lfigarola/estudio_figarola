@@ -5,5 +5,7 @@ references/private/
 .env
 private/
 estudio-figarola-secrets*.php
+estudio-figarola-contact*.log
+estudio-figarola-rate-limit*.json
 *.local.php
 *.tmp
