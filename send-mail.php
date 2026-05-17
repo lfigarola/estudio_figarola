@@ -534,7 +534,7 @@ function build_plain_email_body($data) {
         'Mensaje:',
         $data['visitor_message'],
         '',
-        'Responder este correo para escribir al email indicado por el visitante.',
+        'Puedes responder a ' . $data['visitor_email'] . ' directamente respondiendo a este email.',
     ];
 
     return implode("\n", $lines);
@@ -602,7 +602,7 @@ function build_html_email_body($data) {
             <td style="padding:16px 26px 26px 26px;">
               <div style="font-size:13px;font-weight:800;color:#4f5d68;text-transform:uppercase;margin-bottom:8px;">Mensaje</div>
               <div style="padding:16px 18px;border:1px solid #e0e4e1;border-left:4px solid #417b5a;border-radius:8px;background:#fbfbf8;font-size:16px;line-height:1.55;color:#17283a;">' . $message . '</div>
-              <p style="margin:18px 0 0 0;font-size:13px;line-height:1.45;color:#66717a;">Para responder al visitante, use la opción <strong>Responder</strong> de Gmail. El sitio envía las notificaciones desde no-reply para mantener correcta la autenticación del dominio.</p>
+              <p style="margin:18px 0 0 0;font-size:13px;line-height:1.45;color:#66717a;">Puedes responder a <a href="mailto:' . $email . '" style="color:#2f6f4f;font-weight:700;">' . $email . '</a> directamente respondiendo a este email.</p>
             </td>
           </tr>
         </table>
