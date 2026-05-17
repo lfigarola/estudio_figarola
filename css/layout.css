@@ -1,0 +1,126 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid rgba(208, 206, 186, 0.2);
+  background: rgba(29, 47, 67, 0.96);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.header-inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 82px;
+  padding: 0.42rem 0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.72rem;
+  min-width: 0;
+  color: var(--color-bone);
+}
+
+.brand__mark {
+  width: auto;
+  height: 62px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.28));
+}
+
+.brand__name {
+  color: var(--color-bone);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0.54rem 0.82rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-bone);
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.site-nav__link:hover,
+.site-nav__link.is-active {
+  background: rgba(208, 206, 186, 0.1);
+  border-color: rgba(208, 206, 186, 0.22);
+  color: #ffffff;
+}
+
+.site-nav__link--accent {
+  color: var(--color-bone);
+}
+
+.menu-toggle {
+  display: none;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(208, 206, 186, 0.32);
+  border-radius: var(--radius-sm);
+  background: rgba(18, 34, 52, 0.94);
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  margin: 4px auto;
+  background: var(--color-bone);
+}
+
+.site-footer {
+  margin-top: auto;
+  padding: 1.8rem 0;
+  border-top: 1px solid rgba(208, 206, 186, 0.2);
+  background: var(--color-prussian-blue-dark);
+  color: rgba(239, 238, 230, 0.86);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand--footer {
+  gap: 0.6rem;
+}
+
+.brand--footer .brand__mark {
+  height: 44px;
+}
+
+.brand--footer .brand__name {
+  font-size: 1.2rem;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.92rem;
+  text-align: right;
+}

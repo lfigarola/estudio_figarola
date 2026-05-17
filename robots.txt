@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /css/
+Allow: /js/
+Allow: /styles.css
+Disallow: /references/
+
+Sitemap: https://estudiofigarola.com.ar/sitemap.xml

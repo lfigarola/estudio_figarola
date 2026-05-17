@@ -1,17 +1,12 @@
-# Powered by Zyro.com
+Options -Indexes
 ErrorDocument 401 "Unauthorized"
 ErrorDocument 403 "Forbidden"
-RewriteEngine On
-RewriteBase /
-#### PERSISTENT CONTENT ####
-DirectoryIndex index.php index.cgi index.html
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-#RewriteRule ^(.*)$ zyro/$1 [L,QSA]
+DirectoryIndex index.html
 
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
 
-
-
-
-
-
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^index\.html$ / [R=301,L]
+</IfModule>
