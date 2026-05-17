@@ -10,10 +10,17 @@
   .header-inner {
     grid-template-columns: auto auto;
     justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-inner .brand {
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .site-nav {
     grid-column: 1 / -1;
+    grid-row: 2;
     display: none;
     width: 100%;
     justify-content: stretch;
@@ -34,6 +41,10 @@
 
   .menu-toggle {
     display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-self: end;
   }
 
   .hero {
