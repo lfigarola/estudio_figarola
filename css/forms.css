@@ -51,6 +51,114 @@
   box-shadow: var(--shadow-sm);
 }
 
+.contact-form .btn:disabled {
+  cursor: progress;
+  opacity: 0.72;
+  transform: none;
+}
+
+.realhub-toast-region {
+  position: fixed;
+  top: 5.35rem;
+  right: 1.15rem;
+  z-index: 1200;
+  display: grid;
+  gap: 0.75rem;
+  width: min(380px, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.realhub-toast {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 2.8rem 0.95rem 1rem;
+  border: 1px solid var(--color-line);
+  border-left-width: 0.28rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-bone);
+  box-shadow: var(--shadow);
+  pointer-events: auto;
+  animation: realhub-toast-enter 0.18s ease-out;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.realhub-toast--success {
+  border-color: rgba(65, 123, 90, 0.46);
+  border-left-color: var(--color-viridian);
+}
+
+.realhub-toast--error {
+  border-color: rgba(181, 48, 48, 0.46);
+  border-left-color: #b53030;
+}
+
+.realhub-toast__title {
+  color: var(--color-bone);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.realhub-toast__message {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.realhub-toast__close {
+  position: absolute;
+  top: 0.62rem;
+  right: 0.62rem;
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.realhub-toast__close::before,
+.realhub-toast__close::after {
+  content: "";
+  position: absolute;
+  width: 0.78rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.realhub-toast__close::before {
+  transform: rotate(45deg);
+}
+
+.realhub-toast__close::after {
+  transform: rotate(-45deg);
+}
+
+.realhub-toast__close:hover,
+.realhub-toast__close:focus-visible {
+  border-color: var(--color-line);
+  color: var(--color-bone);
+  outline: none;
+}
+
+@keyframes realhub-toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .visually-hidden {
   position: absolute;
   left: -9999px;

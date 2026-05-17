@@ -4,6 +4,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+$requestId = strtoupper(substr(bin2hex(function_exists('random_bytes') ? random_bytes(8) : openssl_random_pseudo_bytes(8)), 0, 10));
+
 function clean_header_value($value, $maxLength = 200) {
     $value = trim(str_replace(["\r", "\n", "\0"], ' ', strip_tags((string) ($value ?? ''))));
     $value = preg_replace('/\s+/', ' ', $value);
@@ -67,6 +69,28 @@ function render_page($title, $message, $success = false) {
     exit;
 }
 
+function wants_json_response() {
+    $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+    $requestedWith = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+
+    return stripos($accept, 'application/json') !== false || strtolower($requestedWith) === 'xmlhttprequest';
+}
+
+function respond_form($ok, $title, $message, $statusCode = 200) {
+    if (wants_json_response()) {
+        http_response_code($statusCode);
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode([
+            'ok' => (bool) $ok,
+            'title' => $title,
+            'message' => $message,
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    render_page($title, $message, $ok);
+}
+
 function config_candidates() {
     $fileName = 'estudio-figarola-secrets.php';
     $localFileName = 'estudio-figarola-secrets.local.php';
@@ -93,6 +117,63 @@ function config_candidates() {
     $paths[] = __DIR__ . DIRECTORY_SEPARATOR . 'references' . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . $localFileName;
 
     return array_values(array_unique($paths));
+}
+
+function private_log_candidates() {
+    $fileName = 'estudio-figarola-contact.log';
+    $localFileName = 'estudio-figarola-contact.local.log';
+    $paths = [];
+    $current = __DIR__;
+
+    for ($i = 0; $i < 5; $i++) {
+        $paths[] = $current . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . $fileName;
+        $parent = dirname($current);
+
+        if ($parent === $current) {
+            break;
+        }
+
+        $current = $parent;
+    }
+
+    $paths[] = __DIR__ . DIRECTORY_SEPARATOR . 'references' . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . $localFileName;
+
+    return array_values(array_unique($paths));
+}
+
+function redact_log_value($value) {
+    $value = preg_replace('/(password|pass|pwd|secret|token)\s*[:=]\s*\S+/i', '$1=[redacted]', (string) $value);
+    return str_replace(["\r", "\n", "\0"], ' ', $value);
+}
+
+function contact_form_log($level, $message, array $context = []) {
+    $parts = [
+        date('c'),
+        strtoupper($level),
+        redact_log_value($message),
+    ];
+
+    foreach ($context as $key => $value) {
+        if (preg_match('/password|pass|pwd|secret|token/i', (string) $key)) {
+            $value = '[redacted]';
+        }
+
+        $parts[] = preg_replace('/[^a-zA-Z0-9_.-]/', '_', (string) $key) . '=' . redact_log_value((string) $value);
+    }
+
+    $line = implode(' | ', $parts);
+    error_log('[Estudio Figarola contact form] ' . $line);
+
+    foreach (private_log_candidates() as $path) {
+        $directory = dirname($path);
+
+        if (!is_dir($directory) || !is_writable($directory)) {
+            continue;
+        }
+
+        @file_put_contents($path, $line . PHP_EOL, FILE_APPEND | LOCK_EX);
+        break;
+    }
 }
 
 function load_mail_config() {
@@ -358,24 +439,26 @@ function send_with_phpmailer($settings, $messageData) {
 }
 
 function safe_error_log($message) {
-    $message = preg_replace('/(password|pass|pwd|secret|token)\s*[:=]\s*\S+/i', '$1=[redacted]', (string) $message);
-    error_log('[Estudio Figarola contact form] ' . substr($message, 0, 600));
+    contact_form_log('error', substr((string) $message, 0, 600));
 }
 
 if (!empty($_POST['website'] ?? '')) {
-    render_page('Mensaje no enviado', 'La protección antispam detuvo el envío.', false);
+    contact_form_log('warning', 'Spam honeypot triggered.', ['request_id' => $requestId]);
+    respond_form(false, 'Mensaje no enviado', 'La protección antispam detuvo el envío.', 400);
 }
 
 $formStarted = isset($_POST['form_started']) ? (int) $_POST['form_started'] : 0;
 
 if (!$formStarted) {
-    render_page('Mensaje no enviado', 'El formulario no pudo validarse correctamente.', false);
+    contact_form_log('warning', 'Missing form timestamp.', ['request_id' => $requestId]);
+    respond_form(false, 'Mensaje no enviado', 'El formulario no pudo validarse correctamente.', 400);
 }
 
 $elapsedSeconds = (microtime(true) * 1000 - $formStarted) / 1000;
 
 if ($elapsedSeconds < 3) {
-    render_page('Mensaje no enviado', 'El formulario se envió demasiado rápido.', false);
+    contact_form_log('warning', 'Form submitted too quickly.', ['request_id' => $requestId, 'elapsed_seconds' => round($elapsedSeconds, 2)]);
+    respond_form(false, 'Mensaje no enviado', 'El formulario se envió demasiado rápido.', 400);
 }
 
 $name = clean_header_value($_POST['name'] ?? '', 120);
@@ -386,15 +469,18 @@ $subject = clean_header_value($_POST['subject'] ?? 'Consulta desde el sitio web'
 $message = clean_message_value($_POST['message'] ?? '', 3000);
 
 if (!$name || !$email || !$subject || !$message) {
-    render_page('Faltan datos', 'Complete los campos requeridos e intente nuevamente.', false);
+    contact_form_log('warning', 'Missing required form data.', ['request_id' => $requestId]);
+    respond_form(false, 'Faltan datos', 'Complete los campos requeridos e intente nuevamente.', 400);
 }
 
 if (strlen($name) > 120 || strlen($phone) > 80 || strlen($subject) > 200) {
-    render_page('Mensaje no enviado', 'Uno de los campos supera la longitud permitida.', false);
+    contact_form_log('warning', 'Header field length exceeded.', ['request_id' => $requestId]);
+    respond_form(false, 'Mensaje no enviado', 'Uno de los campos supera la longitud permitida.', 400);
 }
 
 if (strlen($message) > 3000) {
-    render_page('Mensaje no enviado', 'El mensaje es demasiado extenso.', false);
+    contact_form_log('warning', 'Message length exceeded.', ['request_id' => $requestId]);
+    respond_form(false, 'Mensaje no enviado', 'El mensaje es demasiado extenso.', 400);
 }
 
 try {
@@ -415,7 +501,10 @@ try {
         'body' => $body,
     ];
 
+    $transport = 'builtin-smtp';
+
     if (load_phpmailer_if_available()) {
+        $transport = 'phpmailer';
         send_with_phpmailer($settings, $messageData);
     } else {
         $mail = $settings['mail'];
@@ -437,9 +526,21 @@ try {
         send_with_builtin_smtp($settings, implode("\r\n", $headers) . "\r\n\r\n" . normalize_body($body));
     }
 
-    render_page('Mensaje enviado', 'Gracias. Su consulta fue enviada correctamente.', true);
+    contact_form_log('info', 'Mail accepted by SMTP transport.', [
+        'request_id' => $requestId,
+        'transport' => $transport,
+        'smtp_host' => $settings['smtp']['host'],
+        'from' => $settings['mail']['from_address'],
+        'to' => $settings['mail']['to_address'],
+        'reply_to' => $email,
+    ]);
+
+    respond_form(true, 'Mensaje enviado', 'Gracias. Su consulta fue enviada correctamente.', 200);
 } catch (Throwable $exception) {
-    safe_error_log('Mail send failed: ' . $exception->getMessage());
-    render_page('Mensaje no enviado', 'Hubo un problema al enviar el mensaje. Intente nuevamente o escriba directamente a consultas@estudiofigarola.com.ar.', false);
+    contact_form_log('error', 'Mail send failed: ' . $exception->getMessage(), [
+        'request_id' => $requestId,
+        'exception' => get_class($exception),
+    ]);
+    respond_form(false, 'Mensaje no enviado', 'Hubo un problema al enviar el mensaje. Intente nuevamente o escriba directamente a consultas@estudiofigarola.com.ar.', 500);
 }
 ?>
