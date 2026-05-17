@@ -172,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     nav.classList.remove('is-open');
+    toggle.classList.remove('active');
     document.body.classList.remove('nav-open');
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Abrir navegación');
@@ -195,8 +196,21 @@ document.addEventListener('DOMContentLoaded', function () {
     var isOpen = !nav.classList.contains('is-open');
 
     nav.classList.toggle('is-open', isOpen);
+    toggle.classList.toggle('active', isOpen);
     document.body.classList.toggle('nav-open', isOpen);
     toggle.setAttribute('aria-expanded', String(isOpen));
     toggle.setAttribute('aria-label', isOpen ? 'Cerrar navegación' : 'Abrir navegación');
+  });
+
+  document.addEventListener('click', function (event) {
+    if (!nav.classList.contains('is-open')) {
+      return;
+    }
+
+    if (toggle.contains(event.target) || nav.contains(event.target)) {
+      return;
+    }
+
+    closeMobileMenu();
   });
 });

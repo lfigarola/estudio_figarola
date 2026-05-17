@@ -33,7 +33,7 @@
   }
 
   .menu-toggle {
-    display: inline-block;
+    display: flex;
   }
 
   .hero {
@@ -125,7 +125,13 @@
   }
 
   .service-card {
-    grid-template-rows: 180px auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service-card img {
+    flex-basis: 180px;
+    height: 180px;
   }
 
   .service-card__body {
