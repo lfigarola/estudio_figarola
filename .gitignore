@@ -1,6 +1,9 @@
 references/
+references/private/
 *.code-workspace
 .vscode/
 .env
 private/
+estudio-figarola-secrets*.php
+*.local.php
 *.tmp

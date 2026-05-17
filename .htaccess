@@ -3,6 +3,12 @@ ErrorDocument 401 "Unauthorized"
 ErrorDocument 403 "Forbidden"
 DirectoryIndex index.html
 
+RedirectMatch 403 ^/(references|private)(/|$)
+
+<FilesMatch "(^|.*)(secrets?|config\.local).*\.(php|ini|env)$">
+  Require all denied
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
